@@ -9,6 +9,11 @@ import TechnologySection from "@/components/TechnologySection";
 import VideoSection from "@/components/VideoSection";
 import ProprietaryTechnology from "@/components/ProprietaryTechnology";
 import WhyChooseSlabstone from "@/components/WhyChooseSlabstone";
+import PartnershipSection from "@/components/PartnershipSection";
+import ProductCatalog from "@/components/ProductCatalog";
+import BeautifulHomesSection from "@/components/BeautifulHomesSection";
+import NewsSection from "@/components/NewsSection";
+import AboutFactorySection from "@/components/AboutFactorySection";
 
 export default function Home() {
   return (
@@ -41,7 +46,7 @@ export default function Home() {
 
       {/* Collections Gallery */}
       <section id="collections">
-        <CollectionsGallery />
+        <ProductCatalog />
       </section>
 
       {/* Manufacturing Process */}
@@ -49,14 +54,24 @@ export default function Home() {
         <ManufacturingProcess />
       </section>
 
-      {/* About Company */}
+      {/* About Factory */}
       <section id="about">
-        <AboutCompany />
+        <AboutFactorySection />
       </section>
 
-      {/* Contact Section */}
-      <section id="contact">
-        <ContactSection />
+      {/* Beautiful Homes Section */}
+      <section id="beautiful-homes">
+        <BeautifulHomesSection />
+      </section>
+
+      {/* News Section */}
+      <section id="news">
+        <NewsSection />
+      </section>
+
+      {/* Partnership Section */}
+      <section id="partnership">
+        <PartnershipSection />
       </section>
 
       {/* Footer */}

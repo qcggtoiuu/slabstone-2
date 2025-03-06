@@ -38,36 +38,6 @@ const ContactSection = ({ className = "" }: ContactSectionProps) => {
             />
           </div>
         </div>
-
-        <div className="mt-16 text-center">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">
-            Tham Quan Showroom Của Chúng Tôi
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Trải nghiệm bộ sưu tập đá nung kết cao cấp của chúng tôi trực tiếp
-            tại showroom. Các chuyên gia của chúng tôi sẽ hướng dẫn bạn qua
-            nhiều loại sản phẩm đa dạng.
-          </p>
-          <div className="flex justify-center space-x-4">
-            <div className="bg-white p-4 rounded-lg shadow-md text-center w-full max-w-xs">
-              <p className="font-medium text-gray-900">Giờ Mở Cửa</p>
-              <p className="text-gray-600 mt-2">
-                Thứ Hai - Thứ Sáu: 8:00 - 17:00
-              </p>
-              <p className="text-gray-600">Thứ Bảy: 9:00 - 12:00</p>
-              <p className="text-gray-600">Chủ Nhật: Đóng cửa</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-md text-center w-full max-w-xs">
-              <p className="font-medium text-gray-900">Đặt Lịch Hẹn</p>
-              <p className="text-gray-600 mt-2">
-                Lên lịch tư vấn cá nhân với các chuyên gia đá của chúng tôi
-              </p>
-              <button className="mt-2 text-stone-800 font-medium hover:underline">
-                Đặt Lịch Hẹn
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
