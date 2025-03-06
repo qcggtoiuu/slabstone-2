@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import MainNav from "@/components/MainNav";
 import TechnologySection from "@/components/TechnologySection";
 import VideoSection from "@/components/VideoSection";
+import ProprietaryTechnology from "@/components/ProprietaryTechnology";
+import WhyChooseSlabstone from "@/components/WhyChooseSlabstone";
 
 export default function Home() {
   return (
@@ -25,6 +27,16 @@ export default function Home() {
       {/* Video Section */}
       <section id="video">
         <VideoSection />
+      </section>
+
+      {/* Proprietary Technology */}
+      <section id="proprietary-technology">
+        <ProprietaryTechnology />
+      </section>
+
+      {/* Why Choose Slabstone */}
+      <section id="why-choose">
+        <WhyChooseSlabstone />
       </section>
 
       {/* Collections Gallery */}
