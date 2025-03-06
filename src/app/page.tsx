@@ -49,16 +49,6 @@ export default function Home() {
         <ProductCatalog />
       </section>
 
-      {/* Manufacturing Process */}
-      <section id="process">
-        <ManufacturingProcess />
-      </section>
-
-      {/* About Factory */}
-      <section id="about">
-        <AboutFactorySection />
-      </section>
-
       {/* Beautiful Homes Section */}
       <section id="beautiful-homes">
         <BeautifulHomesSection />
