@@ -4,7 +4,7 @@ export interface Product {
   slug: string;
   subtitle?: string;
   code: string;
-  price?: string;
+  price?: string; // Lưu thông tin giá dạng chuỗi
   surface: string;
   thickness: string;
   size: string;
@@ -12,8 +12,8 @@ export interface Product {
   color: string;
   applications?: string[];
   collection?: string;
-  catalogueUrl?: string;
-  description?: string;
+  catalogueUrl?: string; // Sẽ hiển thị nút tải nếu có link drive.google.com
+  description?: string; // Nếu dòng nào trống sẽ không nhập lên
   images: string[];
   url: string;
 }

@@ -92,21 +92,22 @@ const ProductDetail = ({ slug }: ProductDetailProps) => {
                 <Button className="flex-1 bg-stone-800 hover:bg-stone-900">
                   Yêu cầu báo giá
                 </Button>
-                {product.catalogueUrl && (
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2"
-                    asChild
-                  >
-                    <a
-                      href={product.catalogueUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                {product.catalogueUrl &&
+                  product.catalogueUrl.includes("drive.google.com") && (
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2"
+                      asChild
                     >
-                      <Download className="h-4 w-4" /> Tải catalogue
-                    </a>
-                  </Button>
-                )}
+                      <a
+                        href={product.catalogueUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Download className="h-4 w-4" /> Tải catalogue
+                      </a>
+                    </Button>
+                  )}
               </div>
             </TabsContent>
 
