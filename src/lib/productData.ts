@@ -8,8 +8,8 @@ export interface Product {
   surface: string;
   thickness: string[]; // Nhiều giá trị phân tách bằng dấu ","
   size: string[]; // Nhiều giá trị phân tách bằng dấu ","
-  finish: string;
-  color: string;
+  finish: string; // Có thể chứa nhiều giá trị phân tách bằng dấu ","
+  color: string; // Có thể chứa nhiều giá trị phân tách bằng dấu ","
   applications?: string[];
   collection?: string;
   catalogueUrl?: string; // Sẽ hiển thị nút tải nếu có link drive.google.com
