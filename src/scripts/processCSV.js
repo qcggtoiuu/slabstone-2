@@ -1,10 +1,13 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Read the CSV file
-const csvContent = fs.readFileSync(path.join(__dirname, '../lib/slab.csv'), 'utf8');
-const lines = csvContent.split('\n');
-const headers = lines[0].split(',');
+const csvContent = fs.readFileSync(
+  path.join(__dirname, "../lib/slab.csv"),
+  "utf8",
+);
+const lines = csvContent.split("\n");
+const headers = lines[0].split(",");
 
 const products = [];
 
@@ -12,51 +15,58 @@ const products = [];
 for (let i = 1; i < lines.length; i++) {
   if (!lines[i].trim()) continue;
 
-  const values = lines[i].split(',');
+  const values = lines[i].split(",");
   const product = {};
 
   // Process each column
   headers.forEach((header, index) => {
     if (
       header === "Ảnh 1" ||
+      header === "Image1" ||
       header === "Ảnh 2" ||
+      header === "Image2" ||
       header === "Ảnh 3" ||
+      header === "Image3" ||
       header === "Ảnh 4" ||
+      header === "Image4" ||
       header === "Ảnh 5" ||
+      header === "Image5" ||
       header === "Ảnh 6" ||
-      header === "Ảnh 7"
+      header === "Image6" ||
+      header === "Ảnh 7" ||
+      header === "Image7"
     ) {
       if (!product.images) product.images = [];
       if (values[index]?.trim()) {
         product.images.push(values[index].trim());
       }
-    } else if (header === "Tên sản phẩm") {
+    } else if (header === "ProductName" || header === "Tên sản phẩm") {
       product.name = values[index]?.trim() || "";
     } else if (header === "Slug") {
       product.slug = values[index]?.trim() || "";
     } else if (header === "Tiêu đề phụ") {
       product.subtitle = values[index]?.trim() || "";
-    } else if (header === "Mã sản phẩm") {
+    } else if (header === "ProductCode" || header === "Mã sản phẩm") {
       product.code = values[index]?.trim() || "";
-    } else if (header === "Giá sản phẩm") {
+    } else if (header === "Price" || header === "Giá sản phẩm") {
       product.price = values[index]?.trim() || "";
-    } else if (header === "Bề mặt") {
+    } else if (header === "Surface" || header === "Bề mặt") {
       product.surface = values[index]?.trim() || "";
-    } else if (header === "Độ dày") {
+    } else if (header === "Thickness" || header === "Độ dày") {
       product.thickness = values[index]?.trim() || "";
-    } else if (header === "Kích thước") {
+    } else if (header === "Dimensions" || header === "Kích thước") {
       product.size = values[index]?.trim() || "";
-    } else if (header === "Hoàn thiện") {
+    } else if (header === "Finish" || header === "Hoàn thiện") {
       product.finish = values[index]?.trim() || "";
-    } else if (header === "Màu sắc") {
+    } else if (header === "Color" || header === "Màu sắc") {
       product.color = values[index]?.trim() || "";
     } else if (header === "Ứng dụng") {
       product.applications = values[index]?.trim() || "";
     } else if (header === "Bộ sưu tập") {
       product.collection = values[index]?.trim() || "";
-    } else if (header === "Tải catalogue") {
+    } else if (header === "CatalogueDownload" || header === "Tải catalogue") {
       product.catalogueUrl = values[index]?.trim() || "";
-    } else if (header === "Mô tả") {
+    } else if (header === "Description" || header === "Mô tả") {
       product.description = values[index]?.trim() || "";
     } else if (header === "URL") {
       product.url = values[index]?.trim() || "";
@@ -65,12 +75,14 @@ for (let i = 1; i < lines.length; i++) {
 
   // Convert applications to array if it exists
   if (product.applications) {
-    product.applications = product.applications.split(',').map(app => app.trim());
+    product.applications = product.applications
+      .split(",")
+      .map((app) => app.trim());
   }
 
   // Add ID if not present
   if (!product.id) {
-    product.id = (i).toString();
+    product.id = i.toString();
   }
 
   products.push(product);
@@ -118,9 +130,9 @@ export function getProductsByFinish(finish: string): Product[] {
 
 // Write to productData.ts
 fs.writeFileSync(
-  path.join(__dirname, '../lib/productData.ts'),
+  path.join(__dirname, "../lib/productData.ts"),
   productDataContent,
-  'utf8'
+  "utf8",
 );
 
 console.log(`Successfully imported ${products.length} products from CSV.`);

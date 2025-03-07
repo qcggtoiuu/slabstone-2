@@ -11,6 +11,14 @@ const nextConfig = {
       "via.placeholder.com",
       "drive.google.com",
     ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "slabstone.vn",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

@@ -120,24 +120,24 @@ export default function Dashboard() {
   const handleExportCSV = () => {
     // Create CSV header
     const headers = [
-      "Tên sản phẩm",
+      "ProductName",
       "Slug",
-      "Mã sản phẩm",
-      "Giá sản phẩm",
-      "Bề mặt",
-      "Độ dày",
-      "Kích thước",
-      "Hoàn thiện",
-      "Màu sắc",
-      "Tải catalogue",
-      "Mô tả",
-      "Ảnh 1",
-      "Ảnh 2",
-      "Ảnh 3",
-      "Ảnh 4",
-      "Ảnh 5",
-      "Ảnh 6",
-      "Ảnh 7",
+      "ProductCode",
+      "Price",
+      "Surface",
+      "Thickness",
+      "Dimensions",
+      "Finish",
+      "Color",
+      "CatalogueDownload",
+      "Description",
+      "Image1",
+      "Image2",
+      "Image3",
+      "Image4",
+      "Image5",
+      "Image6",
+      "Image7",
       "URL",
     ].join(",");
 
@@ -339,6 +339,10 @@ export default function Dashboard() {
       // Return a placeholder instead of trying to load Google Drive images directly
       return "https://via.placeholder.com/40";
     }
+    // Make sure slabstone.vn URLs are properly formatted
+    if (url && url.includes("slabstone.vn")) {
+      return url;
+    }
     return url;
   };
 
@@ -529,9 +533,10 @@ export default function Dashboard() {
                   <h3 className="text-lg font-medium mb-4">Hướng dẫn</h3>
                   <ol className="list-decimal pl-5 space-y-2 text-gray-700">
                     <li>
-                      Chuẩn bị dữ liệu CSV với các cột: Tên sản phẩm, Slug, Mã
-                      sản phẩm, Giá sản phẩm, Bề mặt, Độ dày, Kích thước, Hoàn
-                      thiện, Màu sắc, Tải catalogue, Mô tả, Ảnh 1-7, URL
+                      Chuẩn bị dữ liệu CSV với các cột: ProductName, Slug,
+                      ProductCode, Price, Surface, Thickness, Dimensions,
+                      Finish, Color, CatalogueDownload, Description, Image1-7,
+                      URL
                     </li>
                     <li>Sao chép và dán dữ liệu CSV vào ô văn bản bên trên</li>
                     <li>Nhấn nút "Nhập sản phẩm"</li>

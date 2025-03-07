@@ -136,9 +136,9 @@ export default function ImportCSVPage() {
             <h2 className="text-xl font-semibold">Hướng dẫn</h2>
             <ol className="list-decimal pl-5 space-y-2 text-gray-700">
               <li>
-                Chuẩn bị dữ liệu CSV với các cột: Tên sản phẩm, Slug, Mã sản
-                phẩm, Giá sản phẩm, Bề mặt, Độ dày, Kích thước, Hoàn thiện, Màu
-                sắc, Tải catalogue, Mô tả, Ảnh 1-7, URL
+                Chuẩn bị dữ liệu CSV với các cột: ProductName, Slug,
+                ProductCode, Price, Surface, Thickness, Dimensions, Finish,
+                Color, CatalogueDownload, Description, Image1-7, URL
               </li>
               <li>Sao chép và dán dữ liệu CSV vào ô văn bản bên trái</li>
               <li>Nhấn nút "Nhập sản phẩm"</li>
@@ -151,10 +151,10 @@ export default function ImportCSVPage() {
                 Dòng đầu tiên phải chứa tiêu đề các cột:
                 <br />
                 <code>
-                  Tên sản phẩm,Slug,Tiêu đề phụ,Mã sản phẩm,Giá sản phẩm,Bề
-                  mặt,Độ dày,Kích thước,Hoàn thiện,Màu sắc,Ứng dụng,Bộ sưu
-                  tập,Tải catalogue,Mô tả,Ảnh 1,Ảnh 2,Ảnh 3,Ảnh 4,Ảnh 5,Ảnh
-                  6,Ảnh 7,URL
+                  ProductName,Slug,Tiêu đề
+                  phụ,ProductCode,Price,Surface,Thickness,Dimensions,Finish,Color,Ứng
+                  dụng,Bộ sưu
+                  tập,CatalogueDownload,Description,Image1,Image2,Image3,Image4,Image5,Image6,Image7,URL
                 </code>
               </p>
             </div>
