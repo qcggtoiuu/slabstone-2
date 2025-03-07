@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Dialog, DialogContent, DialogTrigger } from "../components/ui/dialog";
 import { cn } from "../lib/utils";
 
-import { Product } from "@/lib/fetchProducts";
+import { Product } from "@/lib/productData";
 
 type StoneProduct = Product;
 
@@ -96,6 +96,7 @@ const ProductGallery = ({
       return false;
     if (selectedFilters.finish && product.finish !== selectedFilters.finish)
       return false;
+    // Size filter is handled elsewhere
     return true;
   });
 

@@ -6,8 +6,8 @@ export interface Product {
   code: string;
   price?: string; // Lưu thông tin giá dạng chuỗi
   surface: string;
-  thickness: string;
-  size: string;
+  thickness: string[]; // Nhiều giá trị phân tách bằng dấu ","
+  size: string[]; // Nhiều giá trị phân tách bằng dấu ","
   finish: string;
   color: string;
   applications?: string[];

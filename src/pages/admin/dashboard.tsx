@@ -479,8 +479,16 @@ export default function Dashboard() {
                       </TableCell>
                       <TableCell>{product.code}</TableCell>
                       <TableCell>{product.surface}</TableCell>
-                      <TableCell>{product.thickness}</TableCell>
-                      <TableCell>{product.size}</TableCell>
+                      <TableCell>
+                        {Array.isArray(product.thickness)
+                          ? product.thickness.join(", ")
+                          : product.thickness}
+                      </TableCell>
+                      <TableCell>
+                        {Array.isArray(product.size)
+                          ? product.size.join(", ")
+                          : product.size}
+                      </TableCell>
                       <TableCell>{product.finish}</TableCell>
                       <TableCell>{product.color}</TableCell>
                       <TableCell>
@@ -727,13 +735,20 @@ export default function Dashboard() {
                     Độ dày
                   </label>
                   <Input
-                    value={currentProduct.thickness}
-                    onChange={(e) =>
+                    value={
+                      Array.isArray(currentProduct.thickness)
+                        ? currentProduct.thickness.join(", ")
+                        : currentProduct.thickness
+                    }
+                    onChange={(e) => {
+                      const thicknessValues = e.target.value
+                        .split(",")
+                        .map((v) => v.trim());
                       setCurrentProduct({
                         ...currentProduct,
-                        thickness: e.target.value,
-                      })
-                    }
+                        thickness: thicknessValues,
+                      });
+                    }}
                   />
                 </div>
 
@@ -742,13 +757,20 @@ export default function Dashboard() {
                     Kích thước
                   </label>
                   <Input
-                    value={currentProduct.size}
-                    onChange={(e) =>
+                    value={
+                      Array.isArray(currentProduct.size)
+                        ? currentProduct.size.join(", ")
+                        : currentProduct.size
+                    }
+                    onChange={(e) => {
+                      const sizeValues = e.target.value
+                        .split(",")
+                        .map((v) => v.trim());
                       setCurrentProduct({
                         ...currentProduct,
-                        size: e.target.value,
-                      })
-                    }
+                        size: sizeValues,
+                      });
+                    }}
                   />
                 </div>
 
@@ -946,10 +968,20 @@ export default function Dashboard() {
               <div>
                 <label className="block text-sm font-medium mb-1">Độ dày</label>
                 <Input
-                  value={newProduct.thickness}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, thickness: e.target.value })
+                  value={
+                    Array.isArray(newProduct.thickness)
+                      ? newProduct.thickness.join(", ")
+                      : newProduct.thickness || ""
                   }
+                  onChange={(e) => {
+                    const thicknessValues = e.target.value
+                      .split(",")
+                      .map((v) => v.trim());
+                    setNewProduct({
+                      ...newProduct,
+                      thickness: thicknessValues,
+                    });
+                  }}
                 />
               </div>
 
@@ -958,10 +990,17 @@ export default function Dashboard() {
                   Kích thước
                 </label>
                 <Input
-                  value={newProduct.size}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, size: e.target.value })
+                  value={
+                    Array.isArray(newProduct.size)
+                      ? newProduct.size.join(", ")
+                      : newProduct.size || ""
                   }
+                  onChange={(e) => {
+                    const sizeValues = e.target.value
+                      .split(",")
+                      .map((v) => v.trim());
+                    setNewProduct({ ...newProduct, size: sizeValues });
+                  }}
                 />
               </div>
 

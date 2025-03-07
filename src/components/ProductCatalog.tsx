@@ -16,8 +16,8 @@ interface Product {
   name: string;
   images: string[];
   surface: string;
-  thickness: string;
-  size: string;
+  thickness: string[] | string;
+  size: string[] | string;
   color?: string;
   description?: string;
   applications?: string[];
@@ -30,9 +30,10 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
   // Filter states
   const [colorFilter, setColorFilter] = useState("all");
   const [finishFilter, setFinishFilter] = useState("all");
+  const [sizeFilter, setSizeFilter] = useState("all");
 
   // Transform product data to the format needed for the component
-  const products = productData.map(product => ({
+  const products = productData.map((product) => ({
     id: product.id,
     name: product.name,
     image: product.images[0] || "https://via.placeholder.com/800",
@@ -54,18 +55,40 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
   const filteredProducts = products.filter((product) => {
     if (colorFilter !== "all" && product.color !== colorFilter) return false;
     if (finishFilter !== "all" && product.finish !== finishFilter) return false;
+    // Kiểm tra kích thước nếu có bộ lọc kích thước
+    if (sizeFilter !== "all") {
+      if (Array.isArray(product.size)) {
+        if (!product.size.some((s) => s.includes(sizeFilter))) return false;
+      } else if (!product.size.includes(sizeFilter)) {
+        return false;
+      }
+    }
     return true;
   });
 
   // Get unique colors for filter
   const uniqueColors = Array.from(
-    new Set(products.map((product) => product.color).filter(Boolean))
+    new Set(products.map((product) => product.color).filter(Boolean)),
   );
 
   // Get unique finishes for filter
   const uniqueFinishes = Array.from(
-    new Set(products.map((product) => product.finish).filter(Boolean))
+    new Set(products.map((product) => product.finish).filter(Boolean)),
   );
+
+  // Get unique sizes for filter
+  const uniqueSizes = Array.from(
+    new Set(
+      products.flatMap((product) => {
+        if (Array.isArray(product.size)) {
+          return product.size;
+        } else if (product.size) {
+          return [product.size];
+        }
+        return [];
+      }),
+    ),
+  ).filter(Boolean);
 
   return (
     <section className={`py-16 bg-white ${className}`}>
@@ -125,6 +148,28 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
               ))}
             </div>
           </div>
+
+          {/* Size Filter */}
+          <div>
+            <p className="text-sm font-medium mb-2">Kích thước:</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSizeFilter("all")}
+                className={`px-4 py-2 rounded-md ${sizeFilter === "all" ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-800"}`}
+              >
+                Tất cả
+              </button>
+              {uniqueSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSizeFilter(size as string)}
+                  className={`px-4 py-2 rounded-md ${sizeFilter === size ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-800"}`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Product Grid */}
@@ -145,8 +190,18 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
               <div className="p-4">
                 <div className="mt-2 space-y-1 text-sm text-gray-600">
                   <p>Bề mặt: {product.finish}</p>
-                  <p>Độ dày: {product.thickness}</p>
-                  <p>Kích thước: {product.size}</p>
+                  <p>
+                    Độ dày:{" "}
+                    {Array.isArray(product.thickness)
+                      ? product.thickness.join(", ")
+                      : product.thickness}
+                  </p>
+                  <p>
+                    Kích thước:{" "}
+                    {Array.isArray(product.size)
+                      ? product.size.join(", ")
+                      : product.size}
+                  </p>
                 </div>
                 <Button
                   className="w-full mt-4 flex items-center justify-center gap-2"
@@ -192,7 +247,9 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
                         Độ dày
                       </h3>
                       <p className="mt-1 text-base text-gray-900">
-                        {selectedProduct.thickness}
+                        {Array.isArray(selectedProduct.thickness)
+                          ? selectedProduct.thickness.join(", ")
+                          : selectedProduct.thickness}
                       </p>
                     </div>
 
@@ -201,7 +258,9 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
                         Kích thước
                       </h3>
                       <p className="mt-1 text-base text-gray-900">
-                        {selectedProduct.size}
+                        {Array.isArray(selectedProduct.size)
+                          ? selectedProduct.size.join(", ")
+                          : selectedProduct.size}
                       </p>
                     </div>
 

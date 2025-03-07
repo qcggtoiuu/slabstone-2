@@ -70,9 +70,15 @@ export function csvToJson(csvText: string): ProductCSV[] {
       } else if (header === "Surface" || header === "Bề mặt") {
         product.surface = values[index]?.trim() || "";
       } else if (header === "Thickness" || header === "Độ dày") {
-        product.thickness = values[index]?.trim() || "";
+        const thicknessValues = values[index]?.trim() || "";
+        product.thickness = thicknessValues
+          ? thicknessValues.split(",").map((v) => v.trim())
+          : [];
       } else if (header === "Dimensions" || header === "Kích thước") {
-        product.size = values[index]?.trim() || "";
+        const sizeValues = values[index]?.trim() || "";
+        product.size = sizeValues
+          ? sizeValues.split(",").map((v) => v.trim())
+          : [];
       } else if (header === "Finish" || header === "Hoàn thiện") {
         product.finish = values[index]?.trim() || "";
       } else if (header === "Color" || header === "Màu sắc") {
