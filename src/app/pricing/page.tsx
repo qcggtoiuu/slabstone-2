@@ -38,15 +38,14 @@ export default function PricingPage() {
           </p>
           <Button
             className="bg-stone-800 hover:bg-stone-900 flex items-center gap-2"
-            asChild
+            onClick={() =>
+              window.open(
+                "https://drive.google.com/uc?id=1tuT2pTEdj7GsRGCitbG4klqCr8DgwD4n",
+                "_blank",
+              )
+            }
           >
-            <a
-              href="https://drive.google.com/uc?id=1tuT2pTEdj7GsRGCitbG4klqCr8DgwD4n"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Download className="h-4 w-4" /> Tải catalogue
-            </a>
+            <Download className="h-4 w-4" /> Tải catalogue
           </Button>
         </div>
       </section>

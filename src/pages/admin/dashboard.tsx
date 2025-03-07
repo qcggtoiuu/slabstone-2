@@ -237,6 +237,16 @@ export default function Dashboard() {
     setNewProduct({ ...newProduct, images: newImages });
   };
 
+  // Helper function to get a safe image URL for preview
+  const getSafeImageUrl = (url: string) => {
+    // For Google Drive images, use a direct link approach instead of Next.js Image
+    if (url.includes("drive.google.com")) {
+      // Return a placeholder instead of trying to load Google Drive images directly
+      return "https://via.placeholder.com/40";
+    }
+    return url;
+  };
+
   const filteredProducts = products.filter((product) => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -602,7 +612,7 @@ export default function Dashboard() {
                       {currentProduct.images[index] && (
                         <div className="w-10 h-10 relative flex-shrink-0 bg-gray-100">
                           <img
-                            src={currentProduct.images[index]}
+                            src={getSafeImageUrl(currentProduct.images[index])}
                             alt={`Preview ${index + 1}`}
                             className="w-full h-full object-cover"
                             onError={(e) =>
@@ -806,7 +816,7 @@ export default function Dashboard() {
                     {newProduct.images && newProduct.images[index] && (
                       <div className="w-10 h-10 relative flex-shrink-0 bg-gray-100">
                         <img
-                          src={newProduct.images[index]}
+                          src={getSafeImageUrl(newProduct.images[index])}
                           alt={`Preview ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) =>

@@ -9,6 +9,7 @@ const nextConfig = {
       "i.ytimg.com",
       "slabstone.vn",
       "via.placeholder.com",
+      "drive.google.com",
     ],
   },
 };
