@@ -123,21 +123,13 @@ const ProductDetail = ({ slug }: ProductDetailProps) => {
                   <h4 className="text-sm font-medium text-gray-500 mb-1">
                     Độ dày
                   </h4>
-                  <p className="font-medium">
-                    {Array.isArray(product.thickness)
-                      ? product.thickness.join(", ")
-                      : product.thickness}
-                  </p>
+                  <p className="font-medium">{product.thickness}</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500 mb-1">
                     Kích thước
                   </h4>
-                  <p className="font-medium">
-                    {Array.isArray(product.size)
-                      ? product.size.join(", ")
-                      : product.size}
-                  </p>
+                  <p className="font-medium">{product.size}</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-sm font-medium text-gray-500 mb-1">

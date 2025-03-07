@@ -53,39 +53,49 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
 
   // Filter products based on selected filters
   const filteredProducts = products.filter((product) => {
-    if (colorFilter !== "all" && product.color !== colorFilter) return false;
-    if (finishFilter !== "all" && product.finish !== finishFilter) return false;
+    if (colorFilter !== "all") {
+      const colors = product.color.split("|").map((c) => c.trim());
+      if (!colors.includes(colorFilter)) return false;
+    }
+    if (finishFilter !== "all") {
+      const finishes = product.finish.split("|").map((f) => f.trim());
+      if (!finishes.includes(finishFilter)) return false;
+    }
     // Kiểm tra kích thước nếu có bộ lọc kích thước
     if (sizeFilter !== "all") {
-      if (Array.isArray(product.size)) {
-        if (!product.size.some((s) => s.includes(sizeFilter))) return false;
-      } else if (!product.size.includes(sizeFilter)) {
-        return false;
-      }
+      const sizes = product.size.split("|").map((s) => s.trim());
+      if (!sizes.includes(sizeFilter)) return false;
     }
     return true;
   });
 
   // Get unique colors for filter
   const uniqueColors = Array.from(
-    new Set(products.map((product) => product.color).filter(Boolean)),
-  );
+    new Set(
+      products.flatMap((product) => {
+        return product.color
+          ? product.color.split("|").map((c) => c.trim())
+          : [];
+      }),
+    ),
+  ).filter(Boolean);
 
   // Get unique finishes for filter
   const uniqueFinishes = Array.from(
-    new Set(products.map((product) => product.finish).filter(Boolean)),
-  );
+    new Set(
+      products.flatMap((product) => {
+        return product.finish
+          ? product.finish.split("|").map((f) => f.trim())
+          : [];
+      }),
+    ),
+  ).filter(Boolean);
 
   // Get unique sizes for filter
   const uniqueSizes = Array.from(
     new Set(
       products.flatMap((product) => {
-        if (Array.isArray(product.size)) {
-          return product.size;
-        } else if (product.size) {
-          return [product.size];
-        }
-        return [];
+        return product.size ? product.size.split("|").map((s) => s.trim()) : [];
       }),
     ),
   ).filter(Boolean);
@@ -190,18 +200,8 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
               <div className="p-4">
                 <div className="mt-2 space-y-1 text-sm text-gray-600">
                   <p>Bề mặt: {product.finish}</p>
-                  <p>
-                    Độ dày:{" "}
-                    {Array.isArray(product.thickness)
-                      ? product.thickness.join(", ")
-                      : product.thickness}
-                  </p>
-                  <p>
-                    Kích thước:{" "}
-                    {Array.isArray(product.size)
-                      ? product.size.join(", ")
-                      : product.size}
-                  </p>
+                  <p>Độ dày: {product.thickness}</p>
+                  <p>Kích thước: {product.size}</p>
                 </div>
                 <Button
                   className="w-full mt-4 flex items-center justify-center gap-2"
@@ -247,9 +247,7 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
                         Độ dày
                       </h3>
                       <p className="mt-1 text-base text-gray-900">
-                        {Array.isArray(selectedProduct.thickness)
-                          ? selectedProduct.thickness.join(", ")
-                          : selectedProduct.thickness}
+                        {selectedProduct.thickness}
                       </p>
                     </div>
 
@@ -258,9 +256,7 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
                         Kích thước
                       </h3>
                       <p className="mt-1 text-base text-gray-900">
-                        {Array.isArray(selectedProduct.size)
-                          ? selectedProduct.size.join(", ")
-                          : selectedProduct.size}
+                        {selectedProduct.size}
                       </p>
                     </div>
 

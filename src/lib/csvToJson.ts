@@ -20,7 +20,6 @@ export interface ProductCSV {
   catalogueUrl?: string;
   description?: string;
   images: string[];
-  url: string;
 }
 
 export function csvToJson(csvText: string): ProductCSV[] {
@@ -70,15 +69,9 @@ export function csvToJson(csvText: string): ProductCSV[] {
       } else if (header === "Surface" || header === "Bề mặt") {
         product.surface = values[index]?.trim() || "";
       } else if (header === "Thickness" || header === "Độ dày") {
-        const thicknessValues = values[index]?.trim() || "";
-        product.thickness = thicknessValues
-          ? thicknessValues.split(",").map((v) => v.trim())
-          : [];
+        product.thickness = values[index]?.trim() || "";
       } else if (header === "Dimensions" || header === "Kích thước") {
-        const sizeValues = values[index]?.trim() || "";
-        product.size = sizeValues
-          ? sizeValues.split(",").map((v) => v.trim())
-          : [];
+        product.size = values[index]?.trim() || "";
       } else if (header === "Finish" || header === "Hoàn thiện") {
         product.finish = values[index]?.trim() || "";
       } else if (header === "Color" || header === "Màu sắc") {
@@ -90,9 +83,10 @@ export function csvToJson(csvText: string): ProductCSV[] {
       } else if (header === "CatalogueDownload" || header === "Tải catalogue") {
         product.catalogueUrl = values[index]?.trim() || "";
       } else if (header === "Description" || header === "Mô tả") {
-        product.description = values[index]?.trim() || "";
-      } else if (header === "URL") {
-        product.url = values[index]?.trim() || "";
+        // Đảm bảo mô tả không bị nhầm lẫn với các trường khác
+        if (values[index] && values[index].trim().length > 0) {
+          product.description = values[index].trim();
+        }
       }
     });
 
@@ -125,7 +119,6 @@ export function convertCSVToProductData(csvProducts: ProductCSV[]) {
       catalogueUrl: csvProduct.catalogueUrl,
       description: csvProduct.description,
       images: csvProduct.images || [],
-      url: csvProduct.url,
     };
   });
 }

@@ -63,7 +63,6 @@ export default function Dashboard() {
     catalogueUrl: "",
     description: "",
     images: [],
-    url: "",
   });
 
   useEffect(() => {
@@ -149,7 +148,6 @@ export default function Dashboard() {
       "Image5",
       "Image6",
       "Image7",
-      "URL",
     ].join(",");
 
     // Create CSV rows
@@ -172,7 +170,6 @@ export default function Dashboard() {
         `"${product.catalogueUrl || ""}"`,
         `"${product.description?.replace(/\n/g, " ") || ""}"`,
         ...images.map((img) => `"${img || ""}"`),
-        `"${product.url || ""}"`,
       ].join(",");
     });
 
@@ -282,7 +279,6 @@ export default function Dashboard() {
       catalogueUrl: "",
       description: "",
       images: [],
-      url: "",
     });
   };
 
@@ -433,6 +429,8 @@ export default function Dashboard() {
                                 success: true,
                                 message: "Đã xóa tất cả sản phẩm thành công",
                               });
+                              // Reload the page to reflect the changes
+                              window.location.reload();
                             } else {
                               throw new Error(
                                 result.message || "Lỗi khi lưu dữ liệu",
@@ -479,16 +477,8 @@ export default function Dashboard() {
                       </TableCell>
                       <TableCell>{product.code}</TableCell>
                       <TableCell>{product.surface}</TableCell>
-                      <TableCell>
-                        {Array.isArray(product.thickness)
-                          ? product.thickness.join(", ")
-                          : product.thickness}
-                      </TableCell>
-                      <TableCell>
-                        {Array.isArray(product.size)
-                          ? product.size.join(", ")
-                          : product.size}
-                      </TableCell>
+                      <TableCell>{product.thickness}</TableCell>
+                      <TableCell>{product.size}</TableCell>
                       <TableCell>{product.finish}</TableCell>
                       <TableCell>{product.color}</TableCell>
                       <TableCell>
@@ -630,8 +620,7 @@ export default function Dashboard() {
                     <li>
                       Chuẩn bị dữ liệu CSV với các cột: ProductName, Slug,
                       ProductCode, Price, Surface, Thickness, Dimensions,
-                      Finish, Color, CatalogueDownload, Description, Image1-7,
-                      URL
+                      Finish, Color, CatalogueDownload, Description, Image1-7
                     </li>
                     <li>Sao chép và dán dữ liệu CSV vào ô văn bản bên trên</li>
                     <li>Nhấn nút "Nhập sản phẩm"</li>
@@ -735,20 +724,13 @@ export default function Dashboard() {
                     Độ dày
                   </label>
                   <Input
-                    value={
-                      Array.isArray(currentProduct.thickness)
-                        ? currentProduct.thickness.join(", ")
-                        : currentProduct.thickness
-                    }
-                    onChange={(e) => {
-                      const thicknessValues = e.target.value
-                        .split(",")
-                        .map((v) => v.trim());
+                    value={currentProduct.thickness}
+                    onChange={(e) =>
                       setCurrentProduct({
                         ...currentProduct,
-                        thickness: thicknessValues,
-                      });
-                    }}
+                        thickness: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
@@ -757,20 +739,13 @@ export default function Dashboard() {
                     Kích thước
                   </label>
                   <Input
-                    value={
-                      Array.isArray(currentProduct.size)
-                        ? currentProduct.size.join(", ")
-                        : currentProduct.size
-                    }
-                    onChange={(e) => {
-                      const sizeValues = e.target.value
-                        .split(",")
-                        .map((v) => v.trim());
+                    value={currentProduct.size}
+                    onChange={(e) =>
                       setCurrentProduct({
                         ...currentProduct,
-                        size: sizeValues,
-                      });
-                    }}
+                        size: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
@@ -799,19 +774,6 @@ export default function Dashboard() {
                       setCurrentProduct({
                         ...currentProduct,
                         color: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">URL</label>
-                  <Input
-                    value={currentProduct.url}
-                    onChange={(e) =>
-                      setCurrentProduct({
-                        ...currentProduct,
-                        url: e.target.value,
                       })
                     }
                   />
@@ -968,20 +930,10 @@ export default function Dashboard() {
               <div>
                 <label className="block text-sm font-medium mb-1">Độ dày</label>
                 <Input
-                  value={
-                    Array.isArray(newProduct.thickness)
-                      ? newProduct.thickness.join(", ")
-                      : newProduct.thickness || ""
+                  value={newProduct.thickness || ""}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, thickness: e.target.value })
                   }
-                  onChange={(e) => {
-                    const thicknessValues = e.target.value
-                      .split(",")
-                      .map((v) => v.trim());
-                    setNewProduct({
-                      ...newProduct,
-                      thickness: thicknessValues,
-                    });
-                  }}
                 />
               </div>
 
@@ -990,17 +942,10 @@ export default function Dashboard() {
                   Kích thước
                 </label>
                 <Input
-                  value={
-                    Array.isArray(newProduct.size)
-                      ? newProduct.size.join(", ")
-                      : newProduct.size || ""
+                  value={newProduct.size || ""}
+                  onChange={(e) =>
+                    setNewProduct({ ...newProduct, size: e.target.value })
                   }
-                  onChange={(e) => {
-                    const sizeValues = e.target.value
-                      .split(",")
-                      .map((v) => v.trim());
-                    setNewProduct({ ...newProduct, size: sizeValues });
-                  }}
                 />
               </div>
 
@@ -1024,16 +969,6 @@ export default function Dashboard() {
                   value={newProduct.color}
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, color: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">URL</label>
-                <Input
-                  value={newProduct.url}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, url: e.target.value })
                   }
                 />
               </div>

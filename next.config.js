@@ -18,7 +18,14 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.slabstone.vn",
+        port: "",
+        pathname: "/**",
+      },
     ],
+    unoptimized: true,
   },
 };
 
