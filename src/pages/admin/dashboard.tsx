@@ -377,13 +377,23 @@ export default function Dashboard() {
                   Xuất tất cả sản phẩm hiện tại ra file CSV để chỉnh sửa hoặc
                   sao lưu.
                 </p>
-                <Button
-                  onClick={handleExportCSV}
-                  className="bg-stone-800 hover:bg-stone-900"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Xuất CSV
-                </Button>
+                <div className="space-y-4">
+                  <Button
+                    onClick={handleExportCSV}
+                    className="bg-stone-800 hover:bg-stone-900"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Xuất CSV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => (window.location.href = "/admin/import-csv")}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Nhập từ CSV (Trang riêng)
+                  </Button>
+                </div>
 
                 <div className="mt-8">
                   <h3 className="text-lg font-medium mb-4">Hướng dẫn</h3>
