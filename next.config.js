@@ -7,6 +7,8 @@ const nextConfig = {
       "noithatgiakhanh.com",
       "www.sacmi.com",
       "i.ytimg.com",
+      "slabstone.vn",
+      "via.placeholder.com",
     ],
   },
 };
