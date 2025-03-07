@@ -141,21 +141,15 @@ export default function Dashboard() {
       "Color",
       "CatalogueDownload",
       "Description",
-      "Image1",
-      "Image2",
-      "Image3",
-      "Image4",
-      "Image5",
-      "Image6",
-      "Image7",
+      "product.images",
     ].join(",");
 
     // Create CSV rows
     const rows = products.map((product) => {
-      const images = [...product.images];
-      while (images.length < 7) {
-        images.push(""); // Ensure we have 7 image slots
-      }
+      const images =
+        product.images && product.images.length > 0
+          ? [...product.images]
+          : [""];
 
       return [
         `"${product.name || ""}"`,
@@ -465,6 +459,7 @@ export default function Dashboard() {
                     <TableHead>Kích thước</TableHead>
                     <TableHead>Hoàn thiện</TableHead>
                     <TableHead>Màu sắc</TableHead>
+                    <TableHead>Hình ảnh</TableHead>
                     <TableHead className="w-[100px]">Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -481,6 +476,25 @@ export default function Dashboard() {
                       <TableCell>{product.size}</TableCell>
                       <TableCell>{product.finish}</TableCell>
                       <TableCell>{product.color}</TableCell>
+                      <TableCell>
+                        {product.images && product.images.length > 0 ? (
+                          <div className="w-10 h-10 relative flex-shrink-0 bg-gray-100">
+                            <img
+                              src={product.images[0]}
+                              alt={`${product.name} thumbnail`}
+                              className="w-full h-full object-cover"
+                              onError={(e) =>
+                                ((e.target as HTMLImageElement).src =
+                                  "https://via.placeholder.com/40")
+                              }
+                            />
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 text-xs">
+                            Không có ảnh
+                          </span>
+                        )}
+                      </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
                           <Button

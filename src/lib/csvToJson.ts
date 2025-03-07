@@ -50,7 +50,12 @@ export function csvToJson(csvText: string): ProductCSV[] {
         header === "Ảnh 6" ||
         header === "Image6" ||
         header === "Ảnh 7" ||
-        header === "Image7"
+        header === "Image7" ||
+        header === "Image" ||
+        header === "product.images" ||
+        header === "images" ||
+        header === "image" ||
+        header === "L"
       ) {
         if (!product.images) product.images = [];
         if (values[index]?.trim()) {
@@ -86,6 +91,11 @@ export function csvToJson(csvText: string): ProductCSV[] {
         // Đảm bảo mô tả không bị nhầm lẫn với các trường khác
         if (values[index] && values[index].trim().length > 0) {
           product.description = values[index].trim();
+        }
+      } else if (header === "Image" || header === "Ảnh") {
+        if (!product.images) product.images = [];
+        if (values[index]?.trim()) {
+          product.images.push(values[index].trim());
         }
       }
     });

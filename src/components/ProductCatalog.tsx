@@ -33,18 +33,30 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
   const [sizeFilter, setSizeFilter] = useState("all");
 
   // Transform product data to the format needed for the component
-  const products = productData.map((product) => ({
-    id: product.id,
-    name: product.name,
-    image: product.images[0] || "https://via.placeholder.com/800",
-    finish: product.surface,
-    thickness: product.thickness,
-    size: product.size,
-    color: product.color,
-    description: product.description,
-    applications: product.applications,
-    images: product.images,
-  }));
+  const products = productData.map((product) => {
+    console.log("Product images:", product.images);
+    // Ensure product.images is always an array
+    const images = Array.isArray(product.images) ? product.images : [];
+
+    // Thêm ảnh mẫu cho sản phẩm nếu không có ảnh
+    const productImage =
+      images.length > 0
+        ? images[0]
+        : `https://slabstone.vn/wp-content/uploads/2024/02/${product.code}-F1-Polished-1200x2400x9mm.png`;
+
+    return {
+      id: product.id,
+      name: product.name,
+      image: productImage,
+      finish: product.surface,
+      thickness: product.thickness,
+      size: product.size,
+      color: product.color,
+      description: product.description,
+      applications: product.applications,
+      images: images.length > 0 ? images : [productImage],
+    };
+  });
 
   const handleProductClick = (product: any) => {
     setSelectedProduct(product);
@@ -190,12 +202,19 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
               className="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="relative h-[400px] overflow-hidden">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                />
+                {product.image ? (
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                    unoptimized={true}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <p className="text-gray-500">Không có hình ảnh</p>
+                  </div>
+                )}
               </div>
               <div className="p-4">
                 <div className="mt-2 space-y-1 text-sm text-gray-600">
@@ -220,12 +239,19 @@ const ProductCatalog = ({ className = "" }: ProductCatalogProps) => {
             {selectedProduct && (
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="relative h-[500px]">
-                  <Image
-                    src={selectedProduct.images?.[0] || selectedProduct.image}
-                    alt={selectedProduct.name}
-                    fill
-                    className="object-cover"
-                  />
+                  {selectedProduct.images?.[0] || selectedProduct.image ? (
+                    <Image
+                      src={selectedProduct.images?.[0] || selectedProduct.image}
+                      alt={selectedProduct.name}
+                      fill
+                      className="object-cover"
+                      unoptimized={true}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                      <p className="text-gray-500">Không có hình ảnh</p>
+                    </div>
+                  )}
                 </div>
                 <div className="p-6">
                   <h2 className="text-2xl font-bold mb-4">
