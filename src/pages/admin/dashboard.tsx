@@ -5,6 +5,17 @@ import MainNav from "@/components/MainNav";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
@@ -186,36 +197,34 @@ export default function Dashboard() {
   };
 
   const handleDelete = async (productId: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      const updatedProducts = products.filter((p) => p.id !== productId);
-      setProducts(updatedProducts);
+    const updatedProducts = products.filter((p) => p.id !== productId);
+    setProducts(updatedProducts);
 
-      try {
-        // Save updated products to file
-        const response = await fetch("/api/save-product-data", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ products: updatedProducts }),
-        });
+    try {
+      // Save updated products to file
+      const response = await fetch("/api/save-product-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ products: updatedProducts }),
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (result.success) {
-          setStatus({
-            success: true,
-            message: "Sản phẩm đã được xóa và lưu thành công",
-          });
-        } else {
-          throw new Error(result.message || "Lỗi khi lưu dữ liệu");
-        }
-      } catch (error) {
+      if (result.success) {
         setStatus({
-          success: false,
-          message: `Lỗi khi lưu: ${error instanceof Error ? error.message : String(error)}`,
+          success: true,
+          message: "Sản phẩm đã được xóa và lưu thành công",
         });
+      } else {
+        throw new Error(result.message || "Lỗi khi lưu dữ liệu");
       }
+    } catch (error) {
+      setStatus({
+        success: false,
+        message: `Lỗi khi lưu: ${error instanceof Error ? error.message : String(error)}`,
+      });
     }
   };
 
@@ -381,12 +390,69 @@ export default function Dashboard() {
                   {filteredProducts.length} sản phẩm
                 </span>
               </div>
-              <Button
-                onClick={handleAddNew}
-                className="bg-stone-800 hover:bg-stone-900"
-              >
-                <Plus className="mr-2 h-4 w-4" /> Thêm sản phẩm
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleAddNew}
+                  className="bg-stone-800 hover:bg-stone-900"
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Thêm sản phẩm
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">
+                      <Trash2 className="mr-2 h-4 w-4" /> Xóa tất cả
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Xóa tất cả sản phẩm</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Bạn có chắc chắn muốn xóa tất cả sản phẩm? Hành động này
+                        không thể hoàn tác.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Hủy</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={async () => {
+                          setProducts([]);
+                          try {
+                            const response = await fetch(
+                              "/api/save-product-data",
+                              {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ products: [] }),
+                              },
+                            );
+                            const result = await response.json();
+                            if (result.success) {
+                              setStatus({
+                                success: true,
+                                message: "Đã xóa tất cả sản phẩm thành công",
+                              });
+                            } else {
+                              throw new Error(
+                                result.message || "Lỗi khi lưu dữ liệu",
+                              );
+                            }
+                          } catch (error) {
+                            setStatus({
+                              success: false,
+                              message: `Lỗi khi xóa: ${error instanceof Error ? error.message : String(error)}`,
+                            });
+                          }
+                        }}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Xóa tất cả
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
 
             <div className="border rounded-md overflow-hidden">
@@ -426,13 +492,34 @@ export default function Dashboard() {
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(product.id)}
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Xóa sản phẩm
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Bạn có chắc chắn muốn xóa sản phẩm "
+                                  {product.name}"? Hành động này không thể hoàn
+                                  tác.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDelete(product.id)}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  Xóa
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>
