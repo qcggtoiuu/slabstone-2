@@ -71,9 +71,9 @@ export default function Dashboard() {
     loadProducts();
   }, []);
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (!csvData.trim()) {
-      setStatus({ success: false, message: "Please enter CSV data" });
+      setStatus({ success: false, message: "Vui lòng nhập dữ liệu CSV" });
       return;
     }
 
@@ -87,17 +87,30 @@ export default function Dashboard() {
 
       // Update products state
       setProducts(importedProducts);
-      setStatus({
-        success: true,
-        message: `Successfully imported ${importedProducts.length} products`,
+
+      // Send to API endpoint to save to file
+      const response = await fetch("/api/save-product-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ products: importedProducts }),
       });
 
-      // In a real app, you would send this to an API endpoint
-      console.log("Imported products:", importedProducts);
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus({
+          success: true,
+          message: `Đã nhập thành công ${importedProducts.length} sản phẩm. Dữ liệu đã được lưu vào file productData.ts.`,
+        });
+      } else {
+        throw new Error(result.message || "Lỗi khi lưu dữ liệu");
+      }
     } catch (error) {
       setStatus({
         success: false,
-        message: `Error: ${error instanceof Error ? error.message : String(error)}`,
+        message: `Lỗi: ${error instanceof Error ? error.message : String(error)}`,
       });
     } finally {
       setIsLoading(false);
@@ -172,21 +185,76 @@ export default function Dashboard() {
     setIsEditDialogOpen(true);
   };
 
-  const handleDelete = (productId: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      setProducts(products.filter((p) => p.id !== productId));
-      setStatus({ success: true, message: "Product deleted successfully" });
+  const handleDelete = async (productId: string) => {
+    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+      const updatedProducts = products.filter((p) => p.id !== productId);
+      setProducts(updatedProducts);
+
+      try {
+        // Save updated products to file
+        const response = await fetch("/api/save-product-data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ products: updatedProducts }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setStatus({
+            success: true,
+            message: "Sản phẩm đã được xóa và lưu thành công",
+          });
+        } else {
+          throw new Error(result.message || "Lỗi khi lưu dữ liệu");
+        }
+      } catch (error) {
+        setStatus({
+          success: false,
+          message: `Lỗi khi lưu: ${error instanceof Error ? error.message : String(error)}`,
+        });
+      }
     }
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!currentProduct) return;
 
-    setProducts(
-      products.map((p) => (p.id === currentProduct.id ? currentProduct : p)),
+    const updatedProducts = products.map((p) =>
+      p.id === currentProduct.id ? currentProduct : p,
     );
+
+    setProducts(updatedProducts);
     setIsEditDialogOpen(false);
-    setStatus({ success: true, message: "Product updated successfully" });
+
+    try {
+      // Save updated products to file
+      const response = await fetch("/api/save-product-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ products: updatedProducts }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus({
+          success: true,
+          message: "Sản phẩm đã được cập nhật và lưu thành công",
+        });
+      } else {
+        throw new Error(result.message || "Lỗi khi lưu dữ liệu");
+      }
+    } catch (error) {
+      setStatus({
+        success: false,
+        message: `Lỗi khi lưu: ${error instanceof Error ? error.message : String(error)}`,
+      });
+    }
   };
 
   const handleAddNew = () => {
@@ -209,16 +277,43 @@ export default function Dashboard() {
     });
   };
 
-  const handleSaveNew = () => {
+  const handleSaveNew = async () => {
     const productToAdd = {
       ...newProduct,
       id: (products.length + 1).toString(),
       images: Array.isArray(newProduct.images) ? newProduct.images : [],
     } as Product;
 
-    setProducts([...products, productToAdd]);
+    const updatedProducts = [...products, productToAdd];
+    setProducts(updatedProducts);
     setIsAddDialogOpen(false);
-    setStatus({ success: true, message: "Product added successfully" });
+
+    try {
+      // Save updated products to file
+      const response = await fetch("/api/save-product-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ products: updatedProducts }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus({
+          success: true,
+          message: "Sản phẩm đã được thêm và lưu thành công",
+        });
+      } else {
+        throw new Error(result.message || "Lỗi khi lưu dữ liệu");
+      }
+    } catch (error) {
+      setStatus({
+        success: false,
+        message: `Lỗi khi lưu: ${error instanceof Error ? error.message : String(error)}`,
+      });
+    }
   };
 
   const handleImageChange = (index: number, value: string) => {
@@ -347,6 +442,41 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <h2 className="text-xl font-semibold">Nhập sản phẩm từ CSV</h2>
+                <div className="mb-4">
+                  <label
+                    htmlFor="csv-file-dashboard"
+                    className="block text-sm font-medium mb-2"
+                  >
+                    Tải file CSV từ máy tính
+                  </label>
+                  <input
+                    id="csv-file-dashboard"
+                    type="file"
+                    accept=".csv"
+                    className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-md file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-stone-800 file:text-white
+                      hover:file:bg-stone-700"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          const text = event.target?.result;
+                          if (typeof text === "string") {
+                            setCsvData(text);
+                          }
+                        };
+                        reader.readAsText(file);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="mb-2 text-sm text-gray-500">
+                  Hoặc dán dữ liệu CSV vào đây:
+                </div>
                 <Textarea
                   value={csvData}
                   onChange={(e) => setCsvData(e.target.value)}

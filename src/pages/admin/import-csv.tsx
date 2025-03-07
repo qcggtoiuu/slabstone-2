@@ -15,7 +15,7 @@ export default function ImportCSVPage() {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (!csvData.trim()) {
       setStatus({ success: false, message: "Vui lòng nhập dữ liệu CSV" });
       return;
@@ -29,58 +29,31 @@ export default function ImportCSVPage() {
       const csvProducts = csvToJson(csvData);
       const importedProducts = convertCSVToProductData(csvProducts);
 
-      // Create the product data file content
-      const productDataContent = `export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  subtitle?: string;
-  code: string;
-  price?: string;
-  surface: string;
-  thickness: string;
-  size: string;
-  finish: string;
-  color: string;
-  applications?: string[];
-  collection?: string;
-  catalogueUrl?: string;
-  description?: string;
-  images: string[];
-  url: string;
-}
-
-export const products: Product[] = ${JSON.stringify(importedProducts, null, 2)};
-
-export function getProductBySlug(slug: string): Product | undefined {
-  return products.find(product => product.slug === slug);
-}
-
-export function getProductsByCategory(category: string): Product[] {
-  return products.filter(product => product.surface === category);
-}
-
-export function getProductsByColor(color: string): Product[] {
-  return products.filter(product => product.color.includes(color));
-}
-
-export function getProductsByFinish(finish: string): Product[] {
-  return products.filter(product => product.finish.includes(finish));
-}
-`;
-
-      // In a real app, you would send this to an API endpoint
-      console.log("Imported products:", importedProducts);
-      localStorage.setItem("productDataContent", productDataContent);
+      // Save to localStorage for backup
       localStorage.setItem(
         "importedProducts",
         JSON.stringify(importedProducts),
       );
 
-      setStatus({
-        success: true,
-        message: `Đã nhập thành công ${importedProducts.length} sản phẩm. Dữ liệu đã được lưu vào localStorage.`,
+      // Send to API endpoint to save to file
+      const response = await fetch("/api/save-product-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ products: importedProducts }),
       });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus({
+          success: true,
+          message: `Đã nhập thành công ${importedProducts.length} sản phẩm. Dữ liệu đã được lưu vào file productData.ts.`,
+        });
+      } else {
+        throw new Error(result.message || "Lỗi khi lưu dữ liệu");
+      }
     } catch (error) {
       setStatus({
         success: false,
@@ -101,6 +74,41 @@ export function getProductsByFinish(finish: string): Product[] {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <h2 className="text-xl font-semibold">Nhập dữ liệu CSV</h2>
+            <div className="mb-4">
+              <label
+                htmlFor="csv-file"
+                className="block text-sm font-medium mb-2"
+              >
+                Tải file CSV từ máy tính
+              </label>
+              <input
+                id="csv-file"
+                type="file"
+                accept=".csv"
+                className="block w-full text-sm text-gray-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-md file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-stone-800 file:text-white
+                  hover:file:bg-stone-700"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      const text = event.target?.result;
+                      if (typeof text === "string") {
+                        setCsvData(text);
+                      }
+                    };
+                    reader.readAsText(file);
+                  }
+                }}
+              />
+            </div>
+            <div className="mb-2 text-sm text-gray-500">
+              Hoặc dán dữ liệu CSV vào đây:
+            </div>
             <Textarea
               value={csvData}
               onChange={(e) => setCsvData(e.target.value)}
@@ -134,7 +142,7 @@ export function getProductsByFinish(finish: string): Product[] {
               </li>
               <li>Sao chép và dán dữ liệu CSV vào ô văn bản bên trái</li>
               <li>Nhấn nút "Nhập sản phẩm"</li>
-              <li>Hệ thống sẽ xử lý dữ liệu và lưu vào localStorage</li>
+              <li>Hệ thống sẽ xử lý dữ liệu và lưu vào file productData.ts</li>
             </ol>
 
             <div className="mt-8 p-4 bg-blue-50 text-blue-800 rounded-md">
